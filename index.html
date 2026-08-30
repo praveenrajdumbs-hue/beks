@@ -6,13 +6,13 @@
 <title>A Question For You</title>
 <style>
   :root{
-    --plum: #3b1f2b;
-    --blush: #ffe3e9;
-    --blush-2: #ffc9d4;
-    --coral: #ff6b7a;
-    --coral-dark: #e04f5f;
-    --gold: #f4b860;
-    --paper: #fff8f4;
+    --ink: #1c1b29;
+    --paper: #f7f6f3;
+    --card: #ffffff;
+    --accent: #5b4fff;
+    --accent-dark: #4238d1;
+    --line: #e7e5e0;
+    --muted: #8a8794;
   }
 
   *{ box-sizing: border-box; }
@@ -26,53 +26,31 @@
 
   body{
     font-family: -apple-system, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
-    background: radial-gradient(circle at 30% 20%, var(--blush) 0%, var(--blush-2) 55%, #ffb3c1 100%);
+    background: var(--paper);
     display:flex;
     align-items:center;
     justify-content:center;
     position:relative;
   }
 
-  /* floating ambient hearts */
-  .ambient{
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-    overflow:hidden;
-    z-index:0;
-  }
-  .ambient span{
-    position:absolute;
-    bottom:-10%;
-    font-size: 22px;
-    opacity:0.35;
-    animation: float 14s linear infinite;
-    color: var(--coral-dark);
-  }
-  @keyframes float{
-    0%{ transform: translateY(0) rotate(0deg); opacity:0; }
-    10%{ opacity:0.35; }
-    100%{ transform: translateY(-120vh) rotate(30deg); opacity:0; }
-  }
-
   .card{
     position:relative;
     z-index:1;
-    background: var(--paper);
-    border-radius: 28px;
+    background: var(--card);
+    border-radius: 20px;
     padding: 56px 44px 48px;
     max-width: 420px;
     width: 88vw;
     text-align:center;
-    box-shadow: 0 30px 60px -20px rgba(59,31,43,0.35);
-    border: 1px solid rgba(224,79,95,0.15);
+    box-shadow: 0 20px 50px -20px rgba(28,27,41,0.18);
+    border: 1px solid var(--line);
   }
 
   .eyebrow{
     letter-spacing: 3px;
     text-transform: uppercase;
     font-size: 11px;
-    color: var(--coral-dark);
+    color: var(--accent);
     font-weight: 700;
     margin-bottom: 14px;
   }
@@ -82,13 +60,13 @@
     font-style: italic;
     font-size: 30px;
     line-height: 1.25;
-    color: var(--plum);
+    color: var(--ink);
     margin: 0 0 8px;
   }
 
   .sub{
     font-size: 14px;
-    color: #8a6470;
+    color: var(--muted);
     margin: 0 0 34px;
   }
 
@@ -113,17 +91,17 @@
   }
 
   #yes{
-    background: linear-gradient(135deg, var(--coral), var(--coral-dark));
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
     color: white;
-    box-shadow: 0 10px 24px -8px rgba(224,79,95,0.55);
+    box-shadow: 0 10px 24px -8px rgba(91,79,255,0.45);
   }
   #yes:hover{ transform: scale(1.06); }
   #yes:active{ transform: scale(0.97); }
 
   #no{
-    background: white;
-    color: var(--plum);
-    border: 1.5px solid #e8d4d9;
+    background: var(--card);
+    color: var(--ink);
+    border: 1.5px solid var(--line);
     position: relative;
     z-index: 2;
   }
@@ -136,7 +114,7 @@
   .hint{
     margin-top: 18px;
     font-size: 12.5px;
-    color: #a98a94;
+    color: var(--muted);
     min-height: 16px;
     transition: opacity 0.3s ease;
   }
@@ -149,7 +127,7 @@
     display:none;
     align-items:center;
     justify-content:center;
-    background: radial-gradient(circle at 50% 30%, var(--blush-2), var(--coral));
+    background: var(--ink);
     text-align:center;
     padding: 20px;
   }
@@ -167,47 +145,41 @@
     font-size: 34px;
     color: white;
     margin: 0 0 10px;
-    text-shadow: 0 4px 20px rgba(0,0,0,0.15);
   }
   .thanks p{
-    color: rgba(255,255,255,0.92);
+    color: rgba(255,255,255,0.75);
     font-size: 15px;
     max-width: 320px;
     margin: 0 auto;
-  }
-  .heart-burst{
-    font-size: 46px;
-    margin-bottom: 6px;
   }
 
   .confetti{
     position:fixed;
     top:-40px;
-    font-size: 20px;
+    width: 10px;
+    height: 10px;
     z-index: 6;
     pointer-events:none;
     animation: fall linear forwards;
   }
   @keyframes fall{
-    to{ transform: translateY(105vh) rotate(360deg); opacity: 0.9; }
+    to{ transform: translateY(105vh) rotate(360deg); opacity: 0.85; }
   }
 
   @media (prefers-reduced-motion: reduce){
-    .ambient span, .confetti{ animation: none; display:none; }
+    .confetti{ animation: none; display:none; }
     #no.dodging{ transition:none; }
   }
 </style>
 </head>
 <body>
 
-<div class="ambient" id="ambient"></div>
-
 <div class="card">
   <div class="eyebrow">A question</div>
   <h1>are you bekku?</h1>
   <p class="sub">Just pick one. (One of these buttons is a little shy.)</p>
   <div class="btn-row">
-    <button id="yes">Yes 💛</button>
+    <button id="yes">Yes</button>
     <button id="no">No</button>
   </div>
   <div class="hint" id="hint"></div>
@@ -225,7 +197,6 @@
   const yesBtn = document.getElementById('yes');
   const hint = document.getElementById('hint');
   const thanks = document.getElementById('thanks');
-  const ambient = document.getElementById('ambient');
 
   const hints = [
     "Getting warmer... for yes, that is.",
@@ -255,7 +226,6 @@
     hint.textContent = hints[Math.min(hintIndex, hints.length - 1)];
     if (dodges % 2 === 0 && hintIndex < hints.length - 1) hintIndex++;
 
-    // grow yes button slightly each time, capped
     const scale = Math.min(1.35, 1 + dodges * 0.045);
     yesBtn.style.transform = `scale(${scale})`;
   }
@@ -266,20 +236,22 @@
     moveNoButton();
   }, { passive: false });
   noBtn.addEventListener('click', function(e){
-    // in case it's ever clicked (e.g. keyboard), still dodge instead of confirming
     e.preventDefault();
     moveNoButton();
   });
 
   function burstConfetti(){
-    const emojis = ['💛','✨','💌','🎉','💕'];
-    for(let i = 0; i < 26; i++){
+    const colors = ['#5b4fff', '#4238d1', '#1c1b29', '#c9c6ff'];
+    for(let i = 0; i < 30; i++){
       const el = document.createElement('div');
       el.className = 'confetti';
-      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
       el.style.left = Math.random() * 100 + 'vw';
+      el.style.background = colors[Math.floor(Math.random() * colors.length)];
+      el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
       el.style.animationDuration = (2.5 + Math.random() * 2) + 's';
-      el.style.fontSize = (16 + Math.random() * 18) + 'px';
+      const size = 6 + Math.random() * 8;
+      el.style.width = size + 'px';
+      el.style.height = size + 'px';
       document.body.appendChild(el);
       setTimeout(() => el.remove(), 5000);
     }
@@ -289,18 +261,6 @@
     thanks.classList.add('show');
     burstConfetti();
   });
-
-  // ambient floating hearts
-  const ambientEmojis = ['♥','♡'];
-  for(let i=0;i<12;i++){
-    const s = document.createElement('span');
-    s.textContent = ambientEmojis[i % 2];
-    s.style.left = Math.random()*100 + 'vw';
-    s.style.animationDelay = (Math.random()*14) + 's';
-    s.style.animationDuration = (10 + Math.random()*8) + 's';
-    s.style.fontSize = (16 + Math.random()*16) + 'px';
-    ambient.appendChild(s);
-  }
 
   window.addEventListener('resize', function(){
     if(noBtn.classList.contains('dodging')){
