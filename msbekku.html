@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>A Question For You</title>
+<style>
+  :root{
+    --plum: #3b1f2b;
+    --blush: #ffe3e9;
+    --blush-2: #ffc9d4;
+    --coral: #ff6b7a;
+    --coral-dark: #e04f5f;
+    --gold: #f4b860;
+    --paper: #fff8f4;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin:0;
+    padding:0;
+    height:100%;
+    overflow:hidden;
+  }
+
+  body{
+    font-family: -apple-system, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+    background: radial-gradient(circle at 30% 20%, var(--blush) 0%, var(--blush-2) 55%, #ffb3c1 100%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+  }
+
+  /* floating ambient hearts */
+  .ambient{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+    z-index:0;
+  }
+  .ambient span{
+    position:absolute;
+    bottom:-10%;
+    font-size: 22px;
+    opacity:0.35;
+    animation: float 14s linear infinite;
+    color: var(--coral-dark);
+  }
+  @keyframes float{
+    0%{ transform: translateY(0) rotate(0deg); opacity:0; }
+    10%{ opacity:0.35; }
+    100%{ transform: translateY(-120vh) rotate(30deg); opacity:0; }
+  }
+
+  .card{
+    position:relative;
+    z-index:1;
+    background: var(--paper);
+    border-radius: 28px;
+    padding: 56px 44px 48px;
+    max-width: 420px;
+    width: 88vw;
+    text-align:center;
+    box-shadow: 0 30px 60px -20px rgba(59,31,43,0.35);
+    border: 1px solid rgba(224,79,95,0.15);
+  }
+
+  .eyebrow{
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--coral-dark);
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+
+  h1{
+    font-family: Georgia, "Times New Roman", serif;
+    font-style: italic;
+    font-size: 30px;
+    line-height: 1.25;
+    color: var(--plum);
+    margin: 0 0 8px;
+  }
+
+  .sub{
+    font-size: 14px;
+    color: #8a6470;
+    margin: 0 0 34px;
+  }
+
+  .btn-row{
+    position: relative;
+    display:flex;
+    gap: 16px;
+    justify-content:center;
+    align-items:center;
+    min-height: 64px;
+  }
+
+  button{
+    border:none;
+    cursor:pointer;
+    font-family: inherit;
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 16px 30px;
+    font-size: 16px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  #yes{
+    background: linear-gradient(135deg, var(--coral), var(--coral-dark));
+    color: white;
+    box-shadow: 0 10px 24px -8px rgba(224,79,95,0.55);
+  }
+  #yes:hover{ transform: scale(1.06); }
+  #yes:active{ transform: scale(0.97); }
+
+  #no{
+    background: white;
+    color: var(--plum);
+    border: 1.5px solid #e8d4d9;
+    position: relative;
+    z-index: 2;
+  }
+
+  #no.dodging{
+    position: fixed;
+    transition: left 0.18s ease, top 0.18s ease;
+  }
+
+  .hint{
+    margin-top: 18px;
+    font-size: 12.5px;
+    color: #a98a94;
+    min-height: 16px;
+    transition: opacity 0.3s ease;
+  }
+
+  /* thank-you screen */
+  .thanks{
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    background: radial-gradient(circle at 50% 30%, var(--blush-2), var(--coral));
+    text-align:center;
+    padding: 20px;
+  }
+  .thanks.show{ display:flex; }
+  .thanks-inner{
+    animation: pop 0.5s cubic-bezier(.2,1.4,.4,1) both;
+  }
+  @keyframes pop{
+    0%{ transform: scale(0.6); opacity:0; }
+    100%{ transform: scale(1); opacity:1; }
+  }
+  .thanks h2{
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: 34px;
+    color: white;
+    margin: 0 0 10px;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+  .thanks p{
+    color: rgba(255,255,255,0.92);
+    font-size: 15px;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+  .heart-burst{
+    font-size: 46px;
+    margin-bottom: 6px;
+  }
+
+  .confetti{
+    position:fixed;
+    top:-40px;
+    font-size: 20px;
+    z-index: 6;
+    pointer-events:none;
+    animation: fall linear forwards;
+  }
+  @keyframes fall{
+    to{ transform: translateY(105vh) rotate(360deg); opacity: 0.9; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .ambient span, .confetti{ animation: none; display:none; }
+    #no.dodging{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient" id="ambient"></div>
+
+<div class="card">
+  <div class="eyebrow">A question</div>
+  <h1>are you bekku?</h1>
+  <p class="sub">Just pick one. (One of these buttons is a little shy.)</p>
+  <div class="btn-row">
+    <button id="yes">Yes 💛</button>
+    <button id="no">No</button>
+  </div>
+  <div class="hint" id="hint"></div>
+</div>
+
+<div class="thanks" id="thanks">
+  <div class="thanks-inner">
+    <h2>Yay — correct!</h2>
+    <p>yeah you are, i know ;) .</p>
+  </div>
+</div>
+
+<script>
+  const noBtn = document.getElementById('no');
+  const yesBtn = document.getElementById('yes');
+  const hint = document.getElementById('hint');
+  const thanks = document.getElementById('thanks');
+  const ambient = document.getElementById('ambient');
+
+  const hints = [
+    "Getting warmer... for yes, that is.",
+    "It's okay, I'll wait 🙂",
+    "The other button is right there!",
+    "Persistent. I like that.",
+    "Okay this is impressive, but still — yes?"
+  ];
+  let hintIndex = 0;
+  let dodges = 0;
+
+  function moveNoButton(){
+    const btnW = noBtn.offsetWidth || 90;
+    const btnH = noBtn.offsetHeight || 50;
+    const margin = 16;
+    const maxX = window.innerWidth - btnW - margin;
+    const maxY = window.innerHeight - btnH - margin;
+
+    const newX = Math.max(margin, Math.random() * maxX);
+    const newY = Math.max(margin, Math.random() * maxY);
+
+    noBtn.classList.add('dodging');
+    noBtn.style.left = newX + 'px';
+    noBtn.style.top = newY + 'px';
+
+    dodges++;
+    hint.textContent = hints[Math.min(hintIndex, hints.length - 1)];
+    if (dodges % 2 === 0 && hintIndex < hints.length - 1) hintIndex++;
+
+    // grow yes button slightly each time, capped
+    const scale = Math.min(1.35, 1 + dodges * 0.045);
+    yesBtn.style.transform = `scale(${scale})`;
+  }
+
+  noBtn.addEventListener('mouseenter', moveNoButton);
+  noBtn.addEventListener('touchstart', function(e){
+    e.preventDefault();
+    moveNoButton();
+  }, { passive: false });
+  noBtn.addEventListener('click', function(e){
+    // in case it's ever clicked (e.g. keyboard), still dodge instead of confirming
+    e.preventDefault();
+    moveNoButton();
+  });
+
+  function burstConfetti(){
+    const emojis = ['💛','✨','💌','🎉','💕'];
+    for(let i = 0; i < 26; i++){
+      const el = document.createElement('div');
+      el.className = 'confetti';
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.animationDuration = (2.5 + Math.random() * 2) + 's';
+      el.style.fontSize = (16 + Math.random() * 18) + 'px';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 5000);
+    }
+  }
+
+  yesBtn.addEventListener('click', function(){
+    thanks.classList.add('show');
+    burstConfetti();
+  });
+
+  // ambient floating hearts
+  const ambientEmojis = ['♥','♡'];
+  for(let i=0;i<12;i++){
+    const s = document.createElement('span');
+    s.textContent = ambientEmojis[i % 2];
+    s.style.left = Math.random()*100 + 'vw';
+    s.style.animationDelay = (Math.random()*14) + 's';
+    s.style.animationDuration = (10 + Math.random()*8) + 's';
+    s.style.fontSize = (16 + Math.random()*16) + 'px';
+    ambient.appendChild(s);
+  }
+
+  window.addEventListener('resize', function(){
+    if(noBtn.classList.contains('dodging')){
+      moveNoButton();
+    }
+  });
+</script>
+
+</body>
+</html>
